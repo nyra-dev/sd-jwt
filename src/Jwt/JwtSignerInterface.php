@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Jwt;
+namespace Nyra\SdJwt\Jwt;
 
 /**
  * Abstracts signing of issuer-signed JWTs per Section 4.1.

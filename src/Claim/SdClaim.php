@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Claim;
+namespace Nyra\SdJwt\Claim;
 
 /**
  * Convenience factory for selectively-disclosable values.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Exception;
+namespace Nyra\SdJwt\Exception;
 
 /**
  * Raised when a serialized SD-JWT presentation does not follow Section 4 rules.

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
-use GhostZero\SdJwt\Hash\DigestCalculator;
-use GhostZero\SdJwt\Jwt\JwtSignerInterface;
-use GhostZero\SdJwt\Random\RandomSaltGenerator;
-use GhostZero\SdJwt\Random\SaltGeneratorInterface;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Jwt\JwtSignerInterface;
+use Nyra\SdJwt\Random\RandomSaltGenerator;
+use Nyra\SdJwt\Random\SaltGeneratorInterface;
 use JsonException;
 
 /**

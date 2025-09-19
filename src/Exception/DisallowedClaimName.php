@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Exception;
+namespace Nyra\SdJwt\Exception;
 
 /**
  * Raised when a disclosure attempts to introduce forbidden claim names such as _sd or ...

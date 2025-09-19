@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
-use GhostZero\SdJwt\Exception\InvalidDisclosure;
-use GhostZero\SdJwt\Support\Base64Url;
-use GhostZero\SdJwt\Support\Json;
+use Nyra\SdJwt\Exception\InvalidDisclosure;
+use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\Json;
 use JsonException;
 
 /**

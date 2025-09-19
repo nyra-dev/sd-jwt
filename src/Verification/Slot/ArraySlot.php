@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification\Slot;
+namespace Nyra\SdJwt\Verification\Slot;
 
-use GhostZero\SdJwt\Exception\InvalidDisclosure;
-use GhostZero\SdJwt\Verification\ArrayPlaceholder;
-use GhostZero\SdJwt\Verification\DisclosureEnvelope;
-use GhostZero\SdJwt\Verification\DisclosureKind;
-use GhostZero\SdJwt\Verification\VerifierState;
+use Nyra\SdJwt\Exception\InvalidDisclosure;
+use Nyra\SdJwt\Verification\ArrayPlaceholder;
+use Nyra\SdJwt\Verification\DisclosureEnvelope;
+use Nyra\SdJwt\Verification\DisclosureKind;
+use Nyra\SdJwt\Verification\VerifierState;
 
 use function is_array;
 use function sprintf;

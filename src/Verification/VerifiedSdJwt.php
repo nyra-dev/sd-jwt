@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
 /**
  * Result of verifying an SD-JWT presentation.

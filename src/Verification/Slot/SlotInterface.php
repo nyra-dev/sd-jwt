@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification\Slot;
+namespace Nyra\SdJwt\Verification\Slot;
 
-use GhostZero\SdJwt\Verification\DisclosureEnvelope;
-use GhostZero\SdJwt\Verification\VerifierState;
+use Nyra\SdJwt\Verification\DisclosureEnvelope;
+use Nyra\SdJwt\Verification\VerifierState;
 
 interface SlotInterface
 {

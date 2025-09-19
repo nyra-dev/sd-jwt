@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
-use GhostZero\SdJwt\Exception\InvalidPresentation;
+use Nyra\SdJwt\Exception\InvalidPresentation;
 
 /**
  * Parses the compact SD-JWT presentation format defined in Section 4.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Exception;
+namespace Nyra\SdJwt\Exception;
 
 class KeyBindingException extends SdJwtException
 {

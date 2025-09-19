@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use GhostZero\SdJwt\Exception\InvalidDisclosure;
-use GhostZero\SdJwt\Exception\InvalidKeyBinding;
-use GhostZero\SdJwt\Exception\KeyBindingVerificationFailed;
-use GhostZero\SdJwt\Exception\MissingKeyBinding;
-use GhostZero\SdJwt\Hash\DigestCalculator;
-use GhostZero\SdJwt\Jwt\JwtVerifierInterface;
-use GhostZero\SdJwt\Support\Base64Url;
-use GhostZero\SdJwt\Support\Json;
-use GhostZero\SdJwt\Support\JwkConverter;
-use GhostZero\SdJwt\Support\PresentationSerializer;
+use Nyra\SdJwt\Exception\InvalidDisclosure;
+use Nyra\SdJwt\Exception\InvalidKeyBinding;
+use Nyra\SdJwt\Exception\KeyBindingVerificationFailed;
+use Nyra\SdJwt\Exception\MissingKeyBinding;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Jwt\JwtVerifierInterface;
+use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\Json;
+use Nyra\SdJwt\Support\JwkConverter;
+use Nyra\SdJwt\Support\PresentationSerializer;
 use JsonException;
 use stdClass;
 use Throwable;

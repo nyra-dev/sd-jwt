@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Random;
+namespace Nyra\SdJwt\Random;
 
-use GhostZero\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\Base64Url;
 
 /**
  * Generates 128-bit salts encoded for disclosures as required by Section 4.2.1.

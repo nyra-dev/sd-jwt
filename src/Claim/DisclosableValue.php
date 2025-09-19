@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Claim;
+namespace Nyra\SdJwt\Claim;
 
 /**
  * Marker wrapper indicating a claim is selectively disclosable per Section 4.2.

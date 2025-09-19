@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
 /**
  * Indicates whether a disclosure relates to an object property or array element.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Holder;
+namespace Nyra\SdJwt\Holder;
 
 use InvalidArgumentException;
 

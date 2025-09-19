@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
-use GhostZero\SdJwt\Claim\DisclosableValue;
-use GhostZero\SdJwt\Exception\DigestCollision;
-use GhostZero\SdJwt\Hash\DigestCalculator;
-use GhostZero\SdJwt\Random\SaltGeneratorInterface;
-use GhostZero\SdJwt\Support\Base64Url;
-use GhostZero\SdJwt\Support\Json;
+use Nyra\SdJwt\Claim\DisclosableValue;
+use Nyra\SdJwt\Exception\DigestCollision;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Random\SaltGeneratorInterface;
+use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\Json;
 use InvalidArgumentException;
 use JsonException;
 

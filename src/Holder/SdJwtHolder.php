@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Holder;
+namespace Nyra\SdJwt\Holder;
 
-use GhostZero\SdJwt\Hash\DigestCalculator;
-use GhostZero\SdJwt\Issuer\Disclosure;
-use GhostZero\SdJwt\Issuer\IssuedSdJwt;
-use GhostZero\SdJwt\Jwt\JwtSignerInterface;
-use GhostZero\SdJwt\Support\PathHelper;
-use GhostZero\SdJwt\Support\PresentationSerializer;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Issuer\Disclosure;
+use Nyra\SdJwt\Issuer\IssuedSdJwt;
+use Nyra\SdJwt\Jwt\JwtSignerInterface;
+use Nyra\SdJwt\Support\PathHelper;
+use Nyra\SdJwt\Support\PresentationSerializer;
 use InvalidArgumentException;
 
 use function array_key_exists;

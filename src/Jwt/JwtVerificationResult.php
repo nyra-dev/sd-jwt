@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Jwt;
+namespace Nyra\SdJwt\Jwt;
 
 /**
  * Lightweight data transfer object for verified JWT header and payload.

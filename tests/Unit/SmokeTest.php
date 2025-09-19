@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Tests\Unit;
+namespace Nyra\SdJwt\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 

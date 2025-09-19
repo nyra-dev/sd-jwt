@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Tests\Unit;
+namespace Nyra\SdJwt\Tests\Unit;
 
 use Firebase\JWT\Key;
-use GhostZero\SdJwt\Claim\SdClaim;
-use GhostZero\SdJwt\Exception\InvalidKeyBinding;
-use GhostZero\SdJwt\Exception\MissingKeyBinding;
-use GhostZero\SdJwt\Holder\KeyBindingOptions;
-use GhostZero\SdJwt\Holder\SdJwtHolder;
-use GhostZero\SdJwt\Issuer\IssuerOptions;
-use GhostZero\SdJwt\Issuer\IssuedSdJwt;
-use GhostZero\SdJwt\Issuer\SdJwtIssuer;
-use GhostZero\SdJwt\Jwt\FirebaseJwtSigner;
-use GhostZero\SdJwt\Jwt\FirebaseJwtVerifier;
-use GhostZero\SdJwt\Support\Base64Url;
-use GhostZero\SdJwt\Verification\SdJwtVerifier;
-use GhostZero\SdJwt\Verification\VerifierOptions;
+use Nyra\SdJwt\Claim\SdClaim;
+use Nyra\SdJwt\Exception\InvalidKeyBinding;
+use Nyra\SdJwt\Exception\MissingKeyBinding;
+use Nyra\SdJwt\Holder\KeyBindingOptions;
+use Nyra\SdJwt\Holder\SdJwtHolder;
+use Nyra\SdJwt\Issuer\IssuerOptions;
+use Nyra\SdJwt\Issuer\IssuedSdJwt;
+use Nyra\SdJwt\Issuer\SdJwtIssuer;
+use Nyra\SdJwt\Jwt\FirebaseJwtSigner;
+use Nyra\SdJwt\Jwt\FirebaseJwtVerifier;
+use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Verification\SdJwtVerifier;
+use Nyra\SdJwt\Verification\VerifierOptions;
 use PHPUnit\Framework\TestCase;
 
 use function array_replace_recursive;

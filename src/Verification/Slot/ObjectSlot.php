@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification\Slot;
+namespace Nyra\SdJwt\Verification\Slot;
 
-use GhostZero\SdJwt\Exception\DisallowedClaimName;
-use GhostZero\SdJwt\Exception\DuplicateClaim;
-use GhostZero\SdJwt\Exception\InvalidDisclosure;
-use GhostZero\SdJwt\Verification\DisclosureEnvelope;
-use GhostZero\SdJwt\Verification\DisclosureKind;
-use GhostZero\SdJwt\Verification\VerifierState;
+use Nyra\SdJwt\Exception\DisallowedClaimName;
+use Nyra\SdJwt\Exception\DuplicateClaim;
+use Nyra\SdJwt\Exception\InvalidDisclosure;
+use Nyra\SdJwt\Verification\DisclosureEnvelope;
+use Nyra\SdJwt\Verification\DisclosureKind;
+use Nyra\SdJwt\Verification\VerifierState;
 
 use function array_key_exists;
 use function is_array;

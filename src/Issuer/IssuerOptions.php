@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
 /**
  * Options controlling issuance of SD-JWTs.

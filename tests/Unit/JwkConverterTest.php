@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Tests\Unit;
+namespace Nyra\SdJwt\Tests\Unit;
 
 use Firebase\JWT\JWT;
-use GhostZero\SdJwt\Support\Base64Url;
-use GhostZero\SdJwt\Support\JwkConverter;
+use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\JwkConverter;
 use PHPUnit\Framework\TestCase;
 
 use function openssl_pkey_export;

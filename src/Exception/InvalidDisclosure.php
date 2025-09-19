@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Exception;
+namespace Nyra\SdJwt\Exception;
 
 /**
  * Thrown when a disclosure fails structural validation per Sections 4.2.1/4.2.2.

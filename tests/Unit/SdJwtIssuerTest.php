@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Tests\Unit;
+namespace Nyra\SdJwt\Tests\Unit;
 
-use GhostZero\SdJwt\Claim\SdClaim;
-use GhostZero\SdJwt\Issuer\IssuerOptions;
-use GhostZero\SdJwt\Issuer\SdJwtIssuer;
-use GhostZero\SdJwt\Jwt\FirebaseJwtSigner;
+use Nyra\SdJwt\Claim\SdClaim;
+use Nyra\SdJwt\Issuer\IssuerOptions;
+use Nyra\SdJwt\Issuer\SdJwtIssuer;
+use Nyra\SdJwt\Jwt\FirebaseJwtSigner;
 use PHPUnit\Framework\TestCase;
 
 final class SdJwtIssuerTest extends TestCase

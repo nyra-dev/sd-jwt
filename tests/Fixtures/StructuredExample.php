@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use GhostZero\SdJwt\Claim\SdClaim;
+use Nyra\SdJwt\Claim\SdClaim;
 
 return [
     'claims' => [

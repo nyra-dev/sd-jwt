@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
-use GhostZero\SdJwt\Support\PresentationSerializer;
+use Nyra\SdJwt\Support\PresentationSerializer;
 
 use function array_map;
 

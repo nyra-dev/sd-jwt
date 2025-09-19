@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Hash;
+namespace Nyra\SdJwt\Hash;
 
-use GhostZero\SdJwt\Exception\UnsupportedHashAlgorithm;
-use GhostZero\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Exception\UnsupportedHashAlgorithm;
+use Nyra\SdJwt\Support\Base64Url;
 
 /**
  * Computes disclosure digests per Section 4.2.3 using hash algorithms registered via Section 4.1.1.

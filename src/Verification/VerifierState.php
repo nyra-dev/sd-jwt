@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Verification;
+namespace Nyra\SdJwt\Verification;
 
-use GhostZero\SdJwt\Exception\DigestCollision;
-use GhostZero\SdJwt\Exception\DuplicateDisclosure;
-use GhostZero\SdJwt\Exception\InvalidDisclosure;
-use GhostZero\SdJwt\Exception\UnmatchedDisclosure;
-use GhostZero\SdJwt\Hash\DigestCalculator;
-use GhostZero\SdJwt\Verification\Slot\ArraySlot;
-use GhostZero\SdJwt\Verification\Slot\ObjectSlot;
-use GhostZero\SdJwt\Verification\Slot\SlotInterface;
+use Nyra\SdJwt\Exception\DigestCollision;
+use Nyra\SdJwt\Exception\DuplicateDisclosure;
+use Nyra\SdJwt\Exception\InvalidDisclosure;
+use Nyra\SdJwt\Exception\UnmatchedDisclosure;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Verification\Slot\ArraySlot;
+use Nyra\SdJwt\Verification\Slot\ObjectSlot;
+use Nyra\SdJwt\Verification\Slot\SlotInterface;
 
 use function array_filter;
 use function array_is_list;

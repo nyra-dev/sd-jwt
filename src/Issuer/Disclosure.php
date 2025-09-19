@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
-use GhostZero\SdJwt\Support\PathHelper;
+use Nyra\SdJwt\Support\PathHelper;
 
 /**
  * Encapsulates a disclosure string alongside its digest for issuance and presentation.

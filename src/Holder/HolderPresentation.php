@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Holder;
+namespace Nyra\SdJwt\Holder;
 
-use GhostZero\SdJwt\Support\PresentationSerializer;
+use Nyra\SdJwt\Support\PresentationSerializer;
 
 /**
  * Holder-produced result ready for transmission.

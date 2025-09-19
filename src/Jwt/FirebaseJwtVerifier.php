@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Jwt;
+namespace Nyra\SdJwt\Jwt;
 
-use GhostZero\SdJwt\Exception\SignatureVerificationFailed;
-use GhostZero\SdJwt\Support\Json;
+use Nyra\SdJwt\Exception\SignatureVerificationFailed;
+use Nyra\SdJwt\Support\Json;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use stdClass;

@@ -1,16 +1,16 @@
 {
-    "name": "ghostzero/sd-jwt",
+    "name": "nyra/sd-jwt",
     "description": "Selective Disclosure for JWTs (SD-JWT)",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "GhostZero\\SdJwt\\": "src/"
+            "Nyra\\SdJwt\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "GhostZero\\SdJwt\\Tests\\": "tests/"
+            "Nyra\\SdJwt\\Tests\\": "tests/"
         }
     },
     "authors": [

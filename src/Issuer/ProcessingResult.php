@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Issuer;
+namespace Nyra\SdJwt\Issuer;
 
 /**
  * Result of traversing the claim set to produce the SD-JWT payload and disclosures.

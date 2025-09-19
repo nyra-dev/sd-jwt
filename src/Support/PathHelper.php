@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Support;
+namespace Nyra\SdJwt\Support;
 
 use InvalidArgumentException;
 

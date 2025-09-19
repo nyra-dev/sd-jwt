@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Jwt;
+namespace Nyra\SdJwt\Jwt;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

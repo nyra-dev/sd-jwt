@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GhostZero\SdJwt\Jwt;
+namespace Nyra\SdJwt\Jwt;
 
-use GhostZero\SdJwt\Exception\SignatureVerificationFailed;
+use Nyra\SdJwt\Exception\SignatureVerificationFailed;
 
 /**
  * Validates issuer-signed JWTs per Section 7.1.
