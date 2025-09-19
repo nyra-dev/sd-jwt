@@ -1,0 +1,47 @@
+---
+title: Nyra SD-JWT
+description: Welcome! Learn the fundamentals of Selective Disclosure JWTs and how this PHP library helps you issue, hold, and verify privacy-preserving credentials.
+template: splash
+hero:
+  tagline: Build privacy-preserving credentials in PHP.
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Start the beginner tutorial
+      link: /guides/getting-started/
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/nyra-dev/sd-jwt
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why SD-JWT?
+
+Selective Disclosure JWTs (SD-JWT) let issuers package claims once while giving holders the power to reveal only what a verifier needs. This documentation walks you through the entire flow—no prior knowledge of the IETF draft required.
+
+<CardGrid stagger>
+  <Card title="Concept primer" icon="info">
+    Understand the core roles (issuer, holder, verifier) and the terminology we use throughout the guide.
+  </Card>
+  <Card title="Hands-on examples" icon="code">
+    Each chapter contains runnable PHP snippets that you can copy into a fresh project or IDE playground.
+  </Card>
+  <Card title="Production-minded" icon="shield">
+    Learn how to wire sd_hash, key binding, and disclosure validation so your credentials hold up in real systems.
+  </Card>
+  <Card title="Bring your own flows" icon="rocket">
+    Mix the building blocks to support wallets, credential brokers, and verification services with confidence.
+  </Card>
+</CardGrid>
+
+## Roadmap for newcomers
+
+1. **Read the [Getting Started guide](./guides/getting-started/)** to install the library and see your first SD-JWT.
+2. **Dive into the core chapters** to learn what each actor does and how selective disclosure is encoded.
+3. **Work through the end-to-end example** that assembles issuance, presentation, and verification into a single script.
+4. **Explore the reference section** whenever you want deeper insight into configuration options and helper classes.
+
+Ready? Continue to the beginner-friendly tutorial.
