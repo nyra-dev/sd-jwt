@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Nyra\SdJwt\Jwt;
 
+use ArrayAccess;
+use Nyra\Jwt\Exception\UnsupportedAlgorithm;
+use Nyra\Jwt\Jwt;
+use Nyra\Jwt\Key;
 use Nyra\SdJwt\Exception\SignatureVerificationFailed;
 use Nyra\SdJwt\Support\Json;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use stdClass;
 use Throwable;
 
 /**
- * Validates JWT signatures using firebase/php-jwt implementation.
+ * Validates JWT signatures using the Nyra JWT implementation.
  */
-final class FirebaseJwtVerifier implements JwtVerifierInterface
+final class NyraJwtVerifier implements JwtVerifierInterface
 {
     /**
-     * @param Key|array<string,Key>|\ArrayAccess<string,Key> $keyOrKeys
+     * @param Key|array<string,Key>|ArrayAccess<string,Key> $keyOrKeys
      */
-    public function __construct(private readonly Key|array|\ArrayAccess $keyOrKeys)
+    public function __construct(private readonly Key|array|ArrayAccess $keyOrKeys)
     {
     }
 
@@ -27,7 +29,9 @@ final class FirebaseJwtVerifier implements JwtVerifierInterface
     {
         try {
             $header = new stdClass();
-            $payload = JWT::decode($jwt, $this->keyOrKeys, $header);
+            $payload = Jwt::decode($jwt, $this->keyOrKeys, $header);
+        } catch (UnsupportedAlgorithm $exception) {
+            throw new SignatureVerificationFailed($exception->getMessage(), (int) $exception->getCode(), $exception);
         } catch (Throwable $exception) {
             throw new SignatureVerificationFailed($exception->getMessage(), (int) $exception->getCode(), $exception);
         }

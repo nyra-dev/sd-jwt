@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nyra\SdJwt\Tests\Unit;
 
-use Firebase\JWT\JWT;
+use Nyra\Jwt\Jwt;
 use Nyra\SdJwt\Support\Base64Url;
 use Nyra\SdJwt\Support\JwkConverter;
 use PHPUnit\Framework\TestCase;
@@ -36,8 +36,8 @@ final class JwkConverterTest extends TestCase
             'e' => Base64Url::encode($details['rsa']['e']),
         ];
 
-        $token = JWT::encode(['sub' => 'rsa'], $privateKey, 'RS256');
-        $decoded = JWT::decode($token, JwkConverter::toKey($jwk, 'RS256'));
+        $token = Jwt::encode(['sub' => 'rsa'], $privateKey, 'RS256');
+        $decoded = Jwt::decode($token, JwkConverter::toKey($jwk, 'RS256'));
 
         self::assertSame('rsa', $decoded->sub);
     }
@@ -66,8 +66,8 @@ final class JwkConverterTest extends TestCase
             'y' => Base64Url::encode($y),
         ];
 
-        $token = JWT::encode(['sub' => 'ec'], $privateKey, 'ES256');
-        $decoded = JWT::decode($token, JwkConverter::toKey($jwk, 'ES256'));
+        $token = Jwt::encode(['sub' => 'ec'], $privateKey, 'ES256');
+        $decoded = Jwt::decode($token, JwkConverter::toKey($jwk, 'ES256'));
 
         self::assertSame('ec', $decoded->sub);
     }

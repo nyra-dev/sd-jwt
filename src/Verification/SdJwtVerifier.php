@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Nyra\SdJwt\Verification;
 
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use Nyra\Jwt\Jwt;
+use Nyra\Jwt\Key;
 use Nyra\SdJwt\Exception\InvalidDisclosure;
 use Nyra\SdJwt\Exception\InvalidKeyBinding;
 use Nyra\SdJwt\Exception\KeyBindingVerificationFailed;
@@ -118,7 +118,7 @@ final class SdJwtVerifier
 
         try {
             $headersObj = new stdClass();
-            $payloadObj = JWT::decode($keyBindingJwt, $key, $headersObj);
+            $payloadObj = Jwt::decode($keyBindingJwt, $key, $headersObj);
         } catch (Throwable $exception) {
             throw new KeyBindingVerificationFailed($exception->getMessage(), (int) $exception->getCode(), $exception);
         }
@@ -173,12 +173,10 @@ final class SdJwtVerifier
     private function keyFromJwk(array $jwk, string $algorithm): Key
     {
         try {
-            $keyMaterial = JwkConverter::toKeyMaterial($jwk);
+            return JwkConverter::toKey($jwk, $algorithm);
         } catch (\InvalidArgumentException $exception) {
             throw new InvalidKeyBinding($exception->getMessage(), 0, $exception);
         }
-
-        return new Key($keyMaterial, $algorithm);
     }
 
     /**

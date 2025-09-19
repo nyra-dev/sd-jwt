@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nyra\SdJwt\Verification;
 
-use Firebase\JWT\Key;
+use Nyra\Jwt\Key;
 
 /**
  * Options customising SD-JWT verification.

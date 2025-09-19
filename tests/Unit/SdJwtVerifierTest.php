@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nyra\SdJwt\Tests\Unit;
 
-use Firebase\JWT\Key;
+use Nyra\Jwt\Key;
 use Nyra\SdJwt\Claim\SdClaim;
 use Nyra\SdJwt\Exception\InvalidKeyBinding;
 use Nyra\SdJwt\Exception\MissingKeyBinding;
@@ -13,8 +13,8 @@ use Nyra\SdJwt\Holder\SdJwtHolder;
 use Nyra\SdJwt\Issuer\IssuerOptions;
 use Nyra\SdJwt\Issuer\IssuedSdJwt;
 use Nyra\SdJwt\Issuer\SdJwtIssuer;
-use Nyra\SdJwt\Jwt\FirebaseJwtSigner;
-use Nyra\SdJwt\Jwt\FirebaseJwtVerifier;
+use Nyra\SdJwt\Jwt\NyraJwtSigner;
+use Nyra\SdJwt\Jwt\NyraJwtVerifier;
 use Nyra\SdJwt\Support\Base64Url;
 use Nyra\SdJwt\Verification\SdJwtVerifier;
 use Nyra\SdJwt\Verification\VerifierOptions;
@@ -34,19 +34,19 @@ final class SdJwtVerifierTest extends TestCase
 
     private SdJwtVerifier $verifier;
 
-    private FirebaseJwtSigner $holderSigner;
+    private NyraJwtSigner $holderSigner;
 
     private string $holderSecret = 'holder-secret';
 
     protected function setUp(): void
     {
-        $issuerSigner = new FirebaseJwtSigner('issuer-secret', 'HS256');
+        $issuerSigner = new NyraJwtSigner('issuer-secret', 'HS256');
         $this->issuer = new SdJwtIssuer($issuerSigner);
 
         $jwtKey = new Key('issuer-secret', 'HS256');
-        $this->verifier = new SdJwtVerifier(new FirebaseJwtVerifier($jwtKey));
+        $this->verifier = new SdJwtVerifier(new NyraJwtVerifier($jwtKey));
 
-        $this->holderSigner = new FirebaseJwtSigner($this->holderSecret, 'HS256');
+        $this->holderSigner = new NyraJwtSigner($this->holderSecret, 'HS256');
     }
 
     public function testHolderAvailableDisclosures(): void
@@ -184,7 +184,7 @@ final class SdJwtVerifierTest extends TestCase
         $presentation = $holder->buildPresentation(
             ['family_name'],
             new KeyBindingOptions('https://verifier.example', 'nonce-rsa', $issuedAt),
-            new FirebaseJwtSigner($rsa['private'], 'RS256')
+            new NyraJwtSigner($rsa['private'], 'RS256')
         );
 
         $options = new VerifierOptions(
@@ -215,7 +215,7 @@ final class SdJwtVerifierTest extends TestCase
         $presentation = $holder->buildPresentation(
             ['family_name', 'nationalities[1]'],
             new KeyBindingOptions('https://verifier.example', 'nonce-ec', $issuedAt),
-            new FirebaseJwtSigner($ec['private'], 'ES256')
+            new NyraJwtSigner($ec['private'], 'ES256')
         );
 
         $options = new VerifierOptions(

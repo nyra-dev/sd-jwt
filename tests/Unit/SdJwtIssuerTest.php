@@ -7,14 +7,14 @@ namespace Nyra\SdJwt\Tests\Unit;
 use Nyra\SdJwt\Claim\SdClaim;
 use Nyra\SdJwt\Issuer\IssuerOptions;
 use Nyra\SdJwt\Issuer\SdJwtIssuer;
-use Nyra\SdJwt\Jwt\FirebaseJwtSigner;
+use Nyra\SdJwt\Jwt\NyraJwtSigner;
 use PHPUnit\Framework\TestCase;
 
 final class SdJwtIssuerTest extends TestCase
 {
     public function testIssueCreatesDisclosuresAndPayloadPerDraft(): void
     {
-        $signer = new FirebaseJwtSigner('test-secret', 'HS256');
+        $signer = new NyraJwtSigner('test-secret', 'HS256');
         $issuer = new SdJwtIssuer($signer);
 
         $claims = [
