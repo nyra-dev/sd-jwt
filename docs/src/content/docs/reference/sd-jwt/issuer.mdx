@@ -1,0 +1,77 @@
+---
+title: Issuer API
+sidebar:
+  label: Issuer API
+  order: 2
+---
+
+## `SdJwtIssuer`
+
+Creates SD-JWT credentials from associative arrays of claims.
+
+```php
+use Nyra\SdJwt\Issuer\SdJwtIssuer;
+use Nyra\SdJwt\Jwt\FirebaseJwtSigner;
+
+$issuer = new SdJwtIssuer(new FirebaseJwtSigner($key, 'HS256'));
+$issued = $issuer->issue($claims, $options);
+```
+
+- **Constructor** `__construct(JwtSignerInterface $signer, ?SaltGeneratorInterface $saltGenerator = null, ?DigestCalculator $digestCalculator = null)`
+  - Supplies the JWS signer and optionally a salt generator or digest calculator. Defaults are secure for production.
+- **`issue(array $claims, ?IssuerOptions $options = null): IssuedSdJwt`**
+  - Walks the claim tree, generates disclosures for any `SdClaim::disclose()` wrappers, and returns an immutable `IssuedSdJwt`.
+
+## `IssuerOptions`
+
+Optional configuration passed to `issue()`.
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| `headers` | `array<string,mixed>` | Additional protected headers for the issuer-signed JWT (e.g. `['typ' => 'vc+sd-jwt']`). |
+| `hashAlgorithm` | `string|null` | Overrides the digest algorithm (default `sha-256`). Must be supported by `DigestCalculator`. |
+| `includeHashClaim` | `bool` | Whether to include `_sd_alg` in the payload. Defaults to `true`. |
+
+## `IssuedSdJwt`
+
+Represents the result of an issuance.
+
+- `jwt(): string` – Returns the issuer-signed JWT string.
+- `payload(): array<string,mixed>` – The payload with `_sd` digests and `_sd_alg` (if enabled).
+- `disclosures(): array<Disclosure>` – List of generated disclosures, each holding the encoded string, digest, salt, and canonical path.
+- `hashAlgorithm(): string` – Algorithm used for disclosures.
+- `keyBindingJwt(): ?string` – Place-holder for kb-jwt when holder attaches one.
+- `toCompactPresentation(): string` – Serialises the issuer JWT followed by every disclosure and a trailing `~`.
+- `disclosuresByPath(): array<string,Disclosure>` – Convenience map keyed by canonical path.
+
+## `SelectiveDisclosureProcessor`
+
+Internal engine that walks the claim tree. You generally do not use it directly, but understanding its rules helps when shaping data:
+
+- Throws `InvalidArgumentException` if claim names `_sd` or `...` are used in the payload.
+- Converts arrays with selectively disclosed elements into digest placeholders `{ '...': '<digest>' }` while preserving indices.
+- Ensures each digest is unique (`DigestCollision`).
+
+Use `SdClaim::disclose($value)` (see below) anywhere you want a disclosure generated.
+
+## `SdClaim`
+
+Static helper to mark values as selectively disclosable.
+
+```php
+use Nyra\SdJwt\Claim\SdClaim;
+
+$claims = [
+    'family_name' => SdClaim::disclose('Nguyen'),
+];
+```
+
+Under the hood it wraps the value in `DisclosableValue`, which the issuer recognises.
+
+## Related classes
+
+- `Disclosure` – Metadata about each disclosure, including `path()` and `pathString()`.
+- `DigestCalculator` – Pluggable hashing implementation supporting `sha-256`, `sha-384`, and `sha-512` out of the box.
+- `RandomSaltGenerator` – Generates 128-bit salts per Section 4.2.1 of the draft.
+
+Refer to the Holder and Verifier references for how to consume the `IssuedSdJwt` output.

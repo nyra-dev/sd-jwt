@@ -1,0 +1,59 @@
+---
+title: Holder API
+sidebar:
+  label: Holder API
+  order: 3
+---
+
+## `SdJwtHolder`
+
+Accepts an `IssuedSdJwt` and exposes APIs for selecting disclosures and creating optional key-binding JWTs.
+
+```php
+use Nyra\SdJwt\Holder\SdJwtHolder;
+
+$holder = new SdJwtHolder($issued);
+```
+
+### Methods
+
+| Method | Description |
+| ------ | ----------- |
+| `availableDisclosurePaths(): array<string>` | Returns a canonical list of claim paths (e.g. `address.locality`, `nationalities[1]`). |
+| `buildPresentation(?array $paths = null, ?KeyBindingOptions $options = null, ?JwtSignerInterface $signer = null): HolderPresentation` | Builds an SD-JWT presentation. Passing `null` for `$paths` reveals nothing selectively; an empty array discloses none of the optional claims. |
+
+Internally the holder sorts selected disclosures by path depth so that parent structures appear before children, satisfying Section 4.3.1 when hashing the presentation string for `sd_hash`.
+
+## `HolderPresentation`
+
+Immutable value object produced by `buildPresentation()`.
+
+- `issuerSignedJwt(): string`
+- `disclosures(): array<string>` – Encoded disclosures included in the presentation.
+- `keyBindingJwt(): ?string`
+- `toCompact(): string` – Serialises the presentation according to `<issuer jwt>~<disclosure>~...~[kb-jwt]`.
+
+## `KeyBindingOptions`
+
+Describes the kb+jwt payload.
+
+| Property | Type | Description |
+| -------- | ---- | ----------- |
+| `audience` | `string` | Required audience for the verifier. |
+| `nonce` | `string` | Required nonce for replay protection. |
+| `issuedAt` | `int|null` | Optional UNIX timestamp. Default is `time()` during presentation generation. |
+| `additionalClaims` | `array<string,mixed>` | Application-specific claims to embed in kb+jwt (cannot override reserved fields). |
+| `headers` | `array<string,mixed>` | Additional JOSE headers (merged with `['typ' => 'kb+jwt']`). |
+
+### Dependencies
+
+- You must supply a `JwtSignerInterface` when providing `KeyBindingOptions`. The signer can be `FirebaseJwtSigner` or your own implementation.
+- Reserved kb+jwt claim names (`iat`, `aud`, `nonce`, `sd_hash`) are protected from being overwritten.
+
+## Common patterns
+
+- Persist the encoded disclosures separately from the issuer JWT if your wallet needs to support multiple selective presentation profiles.
+- Wrap `SdJwtHolder` in a service that maps verifier requests to the canonical path strings returned by `availableDisclosurePaths()`.
+- When using asymmetric key binding, load your private key once and reuse a signer instance.
+
+Consult the verifier reference for the corresponding validation logic.
