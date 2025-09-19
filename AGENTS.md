@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This library targets the `GhostZero\SdJwt` namespace declared in `composer.json`. Place production code in `src/` using subdirectories that mirror namespaces (e.g., `src/Credential/SdJwtEncoder.php`). Keep generated dependencies under `vendor/`; run Composer instead of editing files there. The `draft-ietf-oauth-selective-disclosure-jwt-22.txt` specification is committed for reference - cite clause numbers in docblocks when behavior mirrors the spec.
+This library targets the `Nyra\SdJwt` namespace declared in `composer.json`. Place production code in `src/` using subdirectories that mirror namespaces (e.g., `src/Credential/SdJwtEncoder.php`). Keep generated dependencies under `vendor/`; run Composer instead of editing files there. The `draft-ietf-oauth-selective-disclosure-jwt-22.txt` specification is committed for reference - cite clause numbers in docblocks when behavior mirrors the spec.
 
 ## Build, Test, and Development Commands
 Use `composer install` after cloning to install dependencies and refresh the autoloader. Run `composer dump-autoload` whenever classes are renamed so PSR-4 metadata stays current. Execute `vendor\bin\phpunit` (once a test suite exists) to run unit tests locally; append `--filter` to target a single test class during debugging.

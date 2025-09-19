@@ -13,9 +13,14 @@ use Nyra\SdJwt\Holder\SdJwtHolder;
 use Nyra\SdJwt\Issuer\IssuerOptions;
 use Nyra\SdJwt\Issuer\IssuedSdJwt;
 use Nyra\SdJwt\Issuer\SdJwtIssuer;
+use Nyra\SdJwt\Hash\DigestCalculator;
+use Nyra\SdJwt\Jwt\JwtVerificationResult;
+use Nyra\SdJwt\Jwt\JwtVerifierInterface;
 use Nyra\SdJwt\Jwt\NyraJwtSigner;
 use Nyra\SdJwt\Jwt\NyraJwtVerifier;
 use Nyra\SdJwt\Support\Base64Url;
+use Nyra\SdJwt\Support\Json;
+use Nyra\SdJwt\Support\PresentationSerializer;
 use Nyra\SdJwt\Verification\SdJwtVerifier;
 use Nyra\SdJwt\Verification\VerifierOptions;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +29,7 @@ use function array_replace_recursive;
 use function openssl_pkey_export;
 use function openssl_pkey_get_details;
 use function openssl_pkey_new;
+use function str_starts_with;
 
 use const OPENSSL_KEYTYPE_EC;
 use const OPENSSL_KEYTYPE_RSA;
@@ -37,6 +43,8 @@ final class SdJwtVerifierTest extends TestCase
     private NyraJwtSigner $holderSigner;
 
     private string $holderSecret = 'holder-secret';
+
+    private ?string $stubSdHash = null;
 
     protected function setUp(): void
     {
@@ -257,6 +265,294 @@ final class SdJwtVerifierTest extends TestCase
         self::assertSame($fixture['expected'], $payload);
     }
 
+    public function testVerifierRejectsKeyBindingWhenTypMissing(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->makeUnsignedKeyBindingJwt(['alg' => 'HS256'], $this->keyBindingPayload());
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('Key Binding JWT MUST use typ "kb+jwt".');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenAlgorithmMissing(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->makeUnsignedKeyBindingJwt(['typ' => 'kb+jwt'], $this->keyBindingPayload());
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('Key Binding JWT MUST declare a signing algorithm.');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenAlgorithmIsNone(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->makeUnsignedKeyBindingJwt(['typ' => 'kb+jwt', 'alg' => 'none'], $this->keyBindingPayload());
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('MUST NOT be used for Key Binding');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsWhenKeyBindingKeyCannotBeResolved(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->makeUnsignedKeyBindingJwt(
+            ['typ' => 'kb+jwt', 'alg' => 'HS256'],
+            $this->keyBindingPayload()
+        );
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('Unable to resolve Key Binding verification key.');
+
+        $verifier->verify($this->stubPresentation($jwt), new VerifierOptions(requireKeyBinding: true));
+    }
+
+    public function testVerifierRejectsInvalidKeyBindingJwk(): void
+    {
+        $payload = ['_sd_alg' => 'sha-256', 'cnf' => ['jwk' => ['kty' => 'oct']]];
+        $verifier = $this->verifierWithStubPayload($payload);
+        $jwt = $this->makeUnsignedKeyBindingJwt(
+            ['typ' => 'kb+jwt', 'alg' => 'HS256'],
+            $this->keyBindingPayload()
+        );
+
+        $this->expectException(InvalidKeyBinding::class);
+
+        $verifier->verify($this->stubPresentation($jwt), new VerifierOptions(requireKeyBinding: true));
+    }
+
+    public function testVerifierRejectsKeyBindingWithMissingIatClaim(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['iat' => null]));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('MUST include integer iat claim');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(requireKeyBinding: true, keyBindingKey: new Key('binding-secret', 'HS256'))
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenIatTooFarInFuture(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $currentTime = 1000;
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['iat' => $currentTime + 61]));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('iat is too far in the future');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: $currentTime
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenIatTooOld(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $currentTime = 1000;
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['iat' => $currentTime - 301]));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('iat is too old');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: $currentTime
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWithMissingAudience(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['aud' => '']));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('include non-empty aud claim');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenAudienceDoesNotMatch(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['aud' => 'https://other.example']));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('aud does not match expected audience');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                expectedAudience: 'https://verifier.example',
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWithMissingNonce(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['nonce' => '']));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('include non-empty nonce');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    public function testVerifierRejectsKeyBindingWhenSdHashDiffers(): void
+    {
+        $verifier = $this->verifierWithStubPayload(['_sd_alg' => 'sha-256']);
+        $jwt = $this->signKeyBindingJwt($this->keyBindingPayload(['sd_hash' => 'not-the-right-hash']));
+
+        $this->expectException(InvalidKeyBinding::class);
+        $this->expectExceptionMessage('sd_hash does not match');
+
+        $verifier->verify(
+            $this->stubPresentation($jwt),
+            new VerifierOptions(
+                requireKeyBinding: true,
+                keyBindingKey: new Key('binding-secret', 'HS256'),
+                currentTime: 1_700_000_000
+            )
+        );
+    }
+
+    private function stubIssuerJwt(): string
+    {
+        return 'stub-issuer.jwt';
+    }
+
+    private function stubPresentation(?string $keyBindingJwt = null): string
+    {
+        if ($keyBindingJwt === null) {
+            return PresentationSerializer::sdJwt($this->stubIssuerJwt(), []);
+        }
+
+        return PresentationSerializer::sdJwtWithKeyBinding($this->stubIssuerJwt(), [], $keyBindingJwt);
+    }
+
+    private function stubSdHash(): string
+    {
+        if ($this->stubSdHash === null) {
+            $serialized = PresentationSerializer::sdJwt($this->stubIssuerJwt(), []);
+            $this->stubSdHash = (new DigestCalculator())->calculate('sha-256', $serialized);
+        }
+
+        return $this->stubSdHash;
+    }
+
+    /**
+     * @param array<string,mixed> $overrides
+     *
+     * @return array<string,mixed>
+     */
+    private function keyBindingPayload(array $overrides = []): array
+    {
+        $payload = [
+            'iat' => 1_700_000_000,
+            'aud' => 'https://verifier.example',
+            'nonce' => 'nonce-value',
+            'sd_hash' => $this->stubSdHash(),
+        ];
+
+        return array_replace($payload, $overrides);
+    }
+
+    /**
+     * @param array<string,mixed> $header
+     * @param array<string,mixed> $payload
+     */
+    private function makeUnsignedKeyBindingJwt(array $header, array $payload): string
+    {
+        return Base64Url::encode(Json::encode($header))
+            . '.' . Base64Url::encode(Json::encode($payload))
+            . '.signature';
+    }
+
+    /**
+     * @param array<string,mixed> $payload
+     */
+    private function signKeyBindingJwt(array $payload, string $secret = 'binding-secret'): string
+    {
+        $signer = new NyraJwtSigner($secret, 'HS256');
+
+        return $signer->sign($payload, ['typ' => 'kb+jwt']);
+    }
+
+    /**
+     * @param array<string,mixed> $payload
+     */
+    private function verifierWithStubPayload(array $payload): SdJwtVerifier
+    {
+        $jwtVerifier = new class($payload) implements JwtVerifierInterface {
+            public function __construct(private array $payload)
+            {
+            }
+
+            public function verify(string $jwt): JwtVerificationResult
+            {
+                return new JwtVerificationResult(['alg' => 'HS256'], $this->payload);
+            }
+        };
+
+        return new SdJwtVerifier($jwtVerifier);
+    }
+
     private function issueCredential(array $overrides = []): IssuedSdJwt
     {
         $claims = $this->baseClaims();
@@ -336,6 +632,9 @@ final class SdJwtVerifierTest extends TestCase
         self::assertIsString($x);
         self::assertIsString($y);
 
+        $x = $this->normaliseEcCoordinate($x);
+        $y = $this->normaliseEcCoordinate($y);
+
         return [
             'private' => $private,
             'jwk' => [
@@ -345,5 +644,23 @@ final class SdJwtVerifierTest extends TestCase
                 'y' => Base64Url::encode($y),
             ],
         ];
+    }
+
+    private function normaliseEcCoordinate(string $coordinate): string
+    {
+        $length = strlen($coordinate);
+        if ($length === 32) {
+            return $coordinate;
+        }
+
+        if ($length < 32) {
+            return str_pad($coordinate, 32, "\0", STR_PAD_LEFT);
+        }
+
+        if ($length > 32 && str_starts_with($coordinate, "\0")) {
+            return substr($coordinate, -32);
+        }
+
+        self::fail('Generated EC coordinate has unexpected length.');
     }
 }
