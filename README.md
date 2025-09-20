@@ -16,7 +16,7 @@ digital identity workflows.
 ## Installation
 
 ```bash
-composer require nyra-dev/sd-jwt
+composer require nyra/sd-jwt
 ```
 
 ## Quick Start
